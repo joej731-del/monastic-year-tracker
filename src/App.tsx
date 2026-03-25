@@ -715,7 +715,7 @@ function styles(themeColors: ReturnType<typeof getFallbackTheme>, isManualMode =
     },
     grid3: {
       display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 170px), 1fr))",
+      gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
       gap: 10,
       alignItems: "start",
     },
@@ -795,6 +795,8 @@ function styles(themeColors: ReturnType<typeof getFallbackTheme>, isManualMode =
     },
     inputDark: {
       width: "100%",
+      maxWidth: "100%",
+      minWidth: 0,
       boxSizing: "border-box" as const,
       border: "1px solid rgba(255,253,248,0.16)",
       borderRadius: 12,
@@ -804,21 +806,25 @@ function styles(themeColors: ReturnType<typeof getFallbackTheme>, isManualMode =
       background: "rgba(255,253,248,0.08)",
       color: palette.white,
       outline: "none",
+      appearance: "none" as const,
+      WebkitAppearance: "none" as const,
     },
     dateInputDark: {
       width: "100%",
+      maxWidth: "100%",
+      minWidth: 0,
       boxSizing: "border-box" as const,
       border: "1px solid rgba(255,253,248,0.16)",
       borderRadius: 12,
-      padding: "10px 14px",
+      padding: "10px 40px 10px 14px",
       height: 42,
       fontSize: 15,
       lineHeight: "20px",
-      display: "flex",
-      alignItems: "center",
       background: "rgba(255,253,248,0.08)",
       color: palette.white,
       outline: "none",
+      appearance: "none" as const,
+      WebkitAppearance: "none" as const,
     },
     textarea: {
       width: "100%",
@@ -1320,6 +1326,19 @@ export default function MonasticYearTrackerApp() {
           input, textarea, select, button { font-size: 16px; }
           body { overflow-x: hidden; }
         }
+        input[type="date"] {
+          min-width: 0;
+          width: 100%;
+          max-width: 100%;
+          -webkit-appearance: none;
+          appearance: none;
+        }
+        input[type="date"]::-webkit-date-and-time-value {
+          text-align: left;
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator {
+          opacity: 0.9;
+        }
       `}</style>
       <div style={s.container}>
         <div style={s.grid2}>
@@ -1329,10 +1348,10 @@ export default function MonasticYearTrackerApp() {
               Track your daily habits, weekly content pipeline, readings, streaks, and year-long monastic progression.
             </p>
             <div style={{ ...s.grid3, marginTop: 16 }}>
-              <div>
+              <div style={{ minWidth: 0 }}>
                 <label style={{ ...s.label, color: "rgba(255,253,248,0.82)" }}>Date</label>
                 <input
-                  style={s.inputDark}
+                  style={s.dateInputDark}
                   type="date"
                   value={selectedDate}
                   onChange={(e) => {
@@ -1341,15 +1360,15 @@ export default function MonasticYearTrackerApp() {
                   }}
                 />
               </div>
-              <div>
+              <div style={{ minWidth: 0 }}>
                 <label style={{ ...s.label, color: "rgba(255,253,248,0.82)" }}>Wake Time</label>
                 <input style={s.inputDark} value={profile.wakeTime} onChange={(e) => setProfile({ ...profile, wakeTime: e.target.value })} />
               </div>
-              <div>
+              <div style={{ minWidth: 0 }}>
                 <label style={{ ...s.label, color: "rgba(255,253,248,0.82)" }}>Work Hours / Week</label>
                 <input style={s.inputDark} type="number" value={profile.workHoursWeekly} onChange={(e) => setProfile({ ...profile, workHoursWeekly: Number(e.target.value) || 0 })} />
               </div>
-              <div>
+              <div style={{ minWidth: 0 }}>
                 <label style={{ ...s.label, color: "rgba(255,253,248,0.82)" }}>School Hours / Week</label>
                 <input style={s.inputDark} type="number" value={profile.schoolHoursWeekly} onChange={(e) => setProfile({ ...profile, schoolHoursWeekly: Number(e.target.value) || 0 })} />
               </div>
