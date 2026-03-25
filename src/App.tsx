@@ -797,10 +797,22 @@ function styles(themeColors: ReturnType<typeof getFallbackTheme>, isManualMode =
       width: "100%",
       boxSizing: "border-box" as const,
       border: "1px solid rgba(255,253,248,0.16)",
-      borderRadius: 14,
-      padding: "12px 13px",
-      minHeight: 46,
-      fontSize: 16,
+      borderRadius: 12,
+      padding: "10px 12px",
+      minHeight: 40,
+      fontSize: 15,
+      background: "rgba(255,253,248,0.08)",
+      color: palette.white,
+      outline: "none",
+    },
+    dateInputDark: {
+      width: "100%",
+      boxSizing: "border-box" as const,
+      border: "1px solid rgba(255,253,248,0.16)",
+      borderRadius: 999,
+      padding: "8px 12px",
+      minHeight: 38,
+      fontSize: 14,
       background: "rgba(255,253,248,0.08)",
       color: palette.white,
       outline: "none",
@@ -975,6 +987,29 @@ function styles(themeColors: ReturnType<typeof getFallbackTheme>, isManualMode =
       alignItems: "flex-start",
       gap: 4,
       flexWrap: "wrap" as const,
+    },
+    plannerRow: {
+      display: "grid",
+      gridTemplateColumns: "88px 1fr",
+      alignItems: "start",
+      gap: 12,
+      border: `1px solid ${palette.line}`,
+      background: "rgba(255,253,248,0.82)",
+      borderRadius: 16,
+      padding: 12,
+      boxShadow: "0 2px 8px rgba(28,25,23,0.03)",
+    },
+    plannerTime: {
+      fontWeight: 700,
+      fontSize: 14,
+      whiteSpace: "nowrap" as const,
+      color: palette.cedar,
+      paddingTop: 1,
+    },
+    plannerTask: {
+      fontSize: 14,
+      lineHeight: 1.45,
+      overflowWrap: "anywhere" as const,
     },
   };
 }
@@ -1294,7 +1329,7 @@ export default function MonasticYearTrackerApp() {
               <div>
                 <label style={{ ...s.label, color: "rgba(255,253,248,0.82)" }}>Date</label>
                 <input
-                  style={s.inputDark}
+                  style={s.dateInputDark}
                   type="date"
                   value={selectedDate}
                   onChange={(e) => {
@@ -1634,9 +1669,9 @@ export default function MonasticYearTrackerApp() {
               <SectionTitle title="Suggested Daily Flow" description="Built around your 6:30 a.m. start" stylesObj={s} />
               <div style={s.mobileStack}>
                 {todayPlan.map((item) => (
-                  <div key={`${item.time}-${item.task}`} style={s.checklistItem}>
-                    <div style={{ fontWeight: 700, fontSize: 14 }}>{item.time}</div>
-                    <div style={{ fontSize: 14 }}>{item.task}</div>
+                  <div key={`${item.time}-${item.task}`} style={s.plannerRow}>
+                    <div style={s.plannerTime}>{item.time}</div>
+                    <div style={s.plannerTask}>{item.task}</div>
                   </div>
                 ))}
               </div>
