@@ -853,11 +853,14 @@ function styles(themeColors: ReturnType<typeof getFallbackTheme>, isManualMode =
     },
     tabRow: {
       display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 110px), 1fr))",
+      gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))",
       gap: 8,
-      position: "sticky" as const,
-      top: 8,
-      zIndex: 5,
+      minWidth: 620,
+    },
+    tabScroller: {
+      overflowX: "auto" as const,
+      paddingBottom: 2,
+      WebkitOverflowScrolling: "touch" as const,
     },
     tab: {
       border: `1px solid ${palette.line}`,
@@ -958,6 +961,20 @@ function styles(themeColors: ReturnType<typeof getFallbackTheme>, isManualMode =
       position: "sticky" as const,
       top: 64,
       alignSelf: "start",
+    },
+    mobileStack: {
+      display: "grid",
+      gap: 12,
+    },
+    inlineInfo: {
+      color: palette.slate,
+      fontSize: 14,
+      lineHeight: 1.55,
+      overflowWrap: "anywhere" as const,
+      display: "flex",
+      alignItems: "flex-start",
+      gap: 4,
+      flexWrap: "wrap" as const,
     },
   };
 }
@@ -1260,7 +1277,12 @@ export default function MonasticYearTrackerApp() {
 
   return (
     <div style={s.page}>
-      <style>{`@media (max-width: 767px) { input, textarea, select, button { font-size: 16px; } }`}</style>
+      <style>{`
+        @media (max-width: 767px) {
+          input, textarea, select, button { font-size: 16px; }
+          body { overflow-x: hidden; }
+        }
+      `}</style>
       <div style={s.container}>
         <div style={s.grid2}>
           <div style={s.heroCard}>
@@ -1296,7 +1318,7 @@ export default function MonasticYearTrackerApp() {
             </div>
           </div>
 
-          <div style={{ ...s.card, ...s.stickyTopCard }}>
+          <div style={{ ...s.card, ...((activeTab === "today" || activeTab === "month") ? s.stickyTopCard : {}) }}>
             <SectionTitle title="Momentum" description="Quick snapshot of consistency" stylesObj={s} />
             <div style={{ marginBottom: 8, display: "flex", justifyContent: "space-between", fontSize: 14 }}>
               <span>Today score</span>
@@ -1327,7 +1349,7 @@ export default function MonasticYearTrackerApp() {
               <div style={{ ...s.stat, marginTop: 12 }}>
                 <div style={{ fontWeight: 700, marginBottom: 6 }}>Reset today?</div>
                 <div style={s.small}>This will clear the checklist and notes for {selectedDate}. Previous days stay intact.</div>
-                <div style={{ display: "flex", gap: 10, marginTop: 12, flexWrap: "wrap" }}>
+                <div style={{ ...s.actionRow, marginTop: 12 }}>
                   <button style={s.buttonSecondary} onClick={() => setShowResetConfirm(false)}>Cancel</button>
                   <button style={s.button} onClick={resetDay}>Confirm Reset</button>
                 </div>
@@ -1337,7 +1359,7 @@ export default function MonasticYearTrackerApp() {
               <div style={{ ...s.stat, marginTop: 12 }}>
                 <div style={{ fontWeight: 700, marginBottom: 6 }}>Midnight rollover</div>
                 <div style={s.small}>{rolloverNotice}</div>
-                <div style={{ marginTop: 10 }}>
+                <div style={{ ...s.actionRow, marginTop: 10 }}>
                   <button style={s.buttonSecondary} onClick={() => setRolloverNotice("")}>Dismiss</button>
                 </div>
               </div>
@@ -1346,7 +1368,8 @@ export default function MonasticYearTrackerApp() {
         </div>
 
         <div style={{ ...s.card, paddingTop: 14, paddingBottom: 14 }}>
-          <div style={s.tabRow}>
+          <div style={s.tabScroller}>
+            <div style={s.tabRow}>
             {[
               ["today", "Today"],
               ["month", "Month Path"],
@@ -1358,6 +1381,7 @@ export default function MonasticYearTrackerApp() {
                 {label}
               </button>
             ))}
+            </div>
           </div>
         </div>
 
@@ -1485,8 +1509,9 @@ export default function MonasticYearTrackerApp() {
                 >
                   Manual Select
                 </button>
-                <div style={{ ...s.small, display: "flex", alignItems: "center" }}>
-                  Active source: <strong style={{ marginLeft: 4 }}>{monthMode === "calendar" ? `Calendar (${(calendarMonthData || MONTHS[0]).name})` : `Manual (${(manualMonth || monthData).name})`}</strong>
+                <div style={s.inlineInfo}>
+                  <span>Active source:</span>
+                  <strong>{monthMode === "calendar" ? `Calendar (${(calendarMonthData || MONTHS[0]).name})` : `Manual (${(manualMonth || monthData).name})`}</strong>
                 </div>
               </div>
               <div style={{ ...s.stat, marginBottom: 14 }}>
@@ -1607,10 +1632,10 @@ export default function MonasticYearTrackerApp() {
           <div style={s.grid2}>
             <div style={s.card}>
               <SectionTitle title="Suggested Daily Flow" description="Built around your 6:30 a.m. start" stylesObj={s} />
-              <div style={{ display: "grid", gap: 10 }}>
+              <div style={s.mobileStack}>
                 {todayPlan.map((item) => (
                   <div key={`${item.time}-${item.task}`} style={s.checklistItem}>
-                    <div style={{ width: 72, fontWeight: 700, fontSize: 14 }}>{item.time}</div>
+                    <div style={{ fontWeight: 700, fontSize: 14 }}>{item.time}</div>
                     <div style={{ fontSize: 14 }}>{item.task}</div>
                   </div>
                 ))}
@@ -1684,7 +1709,7 @@ export default function MonasticYearTrackerApp() {
                       onChange={(e) => setDriveConfig((prev) => ({ ...prev, tokenExpiresAt: e.target.value ? new Date(e.target.value).getTime() : 0 }))}
                     />
                   </div>
-                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                  <div style={s.actionRow}>
                     <button style={s.button} onClick={connectGoogleDrive}>Connect Google Drive</button>
                     <button style={s.buttonSecondary} onClick={saveManualDriveToken}>Save Manual Token</button>
                     <button style={s.buttonSecondary} onClick={disconnectGoogleDrive}>Disconnect</button>
