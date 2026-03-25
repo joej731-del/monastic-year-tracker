@@ -798,8 +798,8 @@ function styles(themeColors: ReturnType<typeof getFallbackTheme>, isManualMode =
       boxSizing: "border-box" as const,
       border: "1px solid rgba(255,253,248,0.16)",
       borderRadius: 12,
-      padding: "10px 12px",
-      minHeight: 40,
+      padding: "10px 14px",
+      height: 42,
       fontSize: 15,
       background: "rgba(255,253,248,0.08)",
       color: palette.white,
@@ -809,10 +809,13 @@ function styles(themeColors: ReturnType<typeof getFallbackTheme>, isManualMode =
       width: "100%",
       boxSizing: "border-box" as const,
       border: "1px solid rgba(255,253,248,0.16)",
-      borderRadius: 999,
-      padding: "8px 12px",
-      minHeight: 38,
-      fontSize: 14,
+      borderRadius: 12,
+      padding: "10px 14px",
+      height: 42,
+      fontSize: 15,
+      lineHeight: "20px",
+      display: "flex",
+      alignItems: "center",
       background: "rgba(255,253,248,0.08)",
       color: palette.white,
       outline: "none",
@@ -1329,7 +1332,7 @@ export default function MonasticYearTrackerApp() {
               <div>
                 <label style={{ ...s.label, color: "rgba(255,253,248,0.82)" }}>Date</label>
                 <input
-                  style={s.dateInputDark}
+                  style={s.inputDark}
                   type="date"
                   value={selectedDate}
                   onChange={(e) => {
